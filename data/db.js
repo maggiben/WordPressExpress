@@ -42,6 +42,7 @@ export default class WordExpressDatabase{
 Post: Conn.define(prefix + 'posts', {
   id: { type: Sequelize.INTEGER, primaryKey: true},
   post_author: { type: Sequelize.INTEGER },
+  post_date: { type: Sequelize.STRING },
   post_title: { type: Sequelize.STRING },
   post_content: { type: Sequelize.STRING },
   post_excerpt: { type: Sequelize.STRING },
@@ -96,6 +97,13 @@ TermTaxonomy: Conn.define(prefix + 'term_taxonomy', {
     return {
       getViewer(){
         return viewer
+      },
+      getUser(userId){
+        return User.findOne({
+          where: {
+            id: userId
+          }
+        })
       },
       getPosts(args){
         const {post_type} = args;

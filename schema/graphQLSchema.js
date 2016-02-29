@@ -99,6 +99,13 @@ function WordExpressGraphQLSchema(ConnQueries, publicSettings){
     name: 'Post',
     fields: () => ({
       id: { type: new GraphQLNonNull(GraphQLID) },
+      post_author: { 
+        type: GraphQLString,
+        resolve(root, args){
+          return ConnQueries.getUser(root.post_author);
+        }
+      },
+      post_date: { type: GraphQLString },
       post_title: { type: GraphQLString },
       post_content: { type: GraphQLString },
       post_excerpt: { type: GraphQLString },

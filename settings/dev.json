@@ -1,15 +1,15 @@
 {
   "public": {
     "uploads": "http://wordexpress.s3.amazonaws.com/",
-    "amazonS3": true
+    "amazonS3": false
   },
   "private": {
     "wp_prefix": "wp_",
     "database": {
-      "name": "wpexpress_dev",
-      "username": "root",
-      "password": "",
-      "host": "127.0.0.1"
+      "name": "marketrealist",
+      "username": "vagrant",
+      "password": "vagrant",
+      "host": "192.168.50.10"
     }
   }
 }

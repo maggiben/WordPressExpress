@@ -92,6 +92,7 @@
     "isomorphic-relay": "^0.4.2",
     "isomorphic-relay-router": "^0.5.1",
     "lodash": "^3.10.1",
+    "moment": "^2.11.2",
     "mysql": "^2.10.0",
     "npm": "^3.5.3",
     "php-unserialize": "0.0.1",

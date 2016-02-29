@@ -28,6 +28,8 @@ type PageInfo {
 
 type Post {
   id: ID!
+  post_author: String
+  post_date: String
   post_title: String
   post_content: String
   post_excerpt: String

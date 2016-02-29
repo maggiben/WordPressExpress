@@ -42,6 +42,7 @@ export default class WordExpressDatabase{
 Post: Conn.define(prefix + 'posts', {
   id: { type: Sequelize.INTEGER, primaryKey: true},
   post_author: { type: Sequelize.INTEGER },
+  post_date: { type: Sequelize.STRING },
   post_title: { type: Sequelize.STRING },
   post_content: { type: Sequelize.STRING },
   post_excerpt: { type: Sequelize.STRING },
@@ -57,11 +58,31 @@ Postmeta: Conn.define(prefix + 'postmeta', {
   meta_key: { type: Sequelize.STRING },
   meta_value: { type: Sequelize.INTEGER },
 }),
+User: Conn.define(prefix + 'users', {
+  id: { type: Sequelize.INTEGER, primaryKey: true},
+  user_login: { type: Sequelize.STRING },
+  user_nicename: { type: Sequelize.STRING },
+  user_email: { type: Sequelize.STRING },
+  user_registered: { type: Sequelize.STRING },
+  display_name: { type: Sequelize.STRING }
+}),
+Usermeta: Conn.define(prefix + 'usermeta', {
+  umeta_id: { type: Sequelize.INTEGER, primaryKey: true, field: 'umeta_id'},
+  user_id: { type: Sequelize.INTEGER },
+  meta_key: { type: Sequelize.STRING },
+  meta_value: { type: Sequelize.INTEGER }
+}),
 Terms: Conn.define(prefix + 'terms', {
   term_id: { type: Sequelize.INTEGER, primaryKey: true },
   name: { type: Sequelize.STRING },
   slug: { type: Sequelize.STRING },
   term_group: { type: Sequelize.INTEGER },
+}),
+Termmeta: Conn.define(prefix + 'termmeta', {
+  meta_id: { type: Sequelize.INTEGER, primaryKey: true, field: 'meta_id'},
+  term_id: { type: Sequelize.INTEGER },
+  meta_key: { type: Sequelize.STRING },
+  meta_value: { type: Sequelize.INTEGER }
 }),
 TermRelationships: Conn.define(prefix + 'term_relationships', {
   object_id: { type: Sequelize.INTEGER, primaryKey: true },
@@ -80,7 +101,7 @@ TermTaxonomy: Conn.define(prefix + 'term_taxonomy', {
 
   getQueries(){
     const { amazonS3, uploadDirectory } = this.connectionDetails;
-    const { Post, Postmeta, Terms, TermRelationships, TermTaxonomy  } = this.getModels();
+    const { Post, Postmeta, Terms, Termmeta, TermRelationships, TermTaxonomy, User, Usermeta  } = this.getModels();
 
     Terms.hasMany(TermRelationships,  {foreignKey: 'term_taxonomy_id'});
     TermRelationships.belongsTo(Terms, {foreignKey: 'term_taxonomy_id'});
@@ -90,12 +111,31 @@ TermTaxonomy: Conn.define(prefix + 'term_taxonomy', {
 
     TermRelationships.belongsTo(Post, {foreignKey: 'object_id'});
 
+
+    //Terms.hasMany(Termmeta,  {foreignKey: 'term_id'});
+    //Termmeta.hasMany(Terms,  {foreignKey: 'meta_id'});
+
+    //User.hasMany(Usermeta, {foreignKey: 'user_id'});
+    //Usermeta.hasMany(User, {foreignKey: 'user_id'});
+    //Post.hasMany(User, {foreignKey: 'post_author'});
+
     Post.hasMany(Postmeta, {foreignKey: 'post_id'});
     Postmeta.belongsTo(Post, {foreignKey: 'post_id'});
 
     return {
       getViewer(){
         return viewer
+      },
+      getUser(userId){
+        console.log("getUser: ", userId)
+        return User.findOne({
+          where: {
+            id: userId
+          }
+        }).then( res => {
+          console.log("res:", res)
+          return res.display_name
+        })
       },
       getPosts(args){
         const {post_type} = args;
